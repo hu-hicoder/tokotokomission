@@ -1,5 +1,7 @@
+import Start from "./components/home/Start";
+
 export default function Home() {
   return (
-    <div>トコトコミッション</div> // 仮テキスト
+    <Start />
   );
 }
