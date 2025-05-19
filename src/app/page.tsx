@@ -1,4 +1,4 @@
-import { MapContent } from '@/app/map/components/map-content';
+import { MapContent } from '@src/app/components/maps/map-content.tsx';
 
 export default function Page() {
   return (
