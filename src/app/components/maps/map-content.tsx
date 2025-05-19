@@ -1,6 +1,6 @@
 'use client';
 
-import { AdvancedMarker, APIProvider, Map } from '@vis.gl/react-google-maps';
+import { APIProvider, Map } from '@vis.gl/react-google-maps';
 
 export const MapContent = () => {
   return (
@@ -8,9 +8,8 @@ export const MapContent = () => {
       <Map
         defaultZoom={15}
         defaultCenter={{ lat: 35.656, lng: 139.737 }}
-      >
-        <AdvancedMarker position={{ lat: 35.656, lng: 139.737 }} />
-      </Map>
+        mapId={process.env.NEXT_PUBLIC_GOOGLE_MAPS_ID || ''}
+      />
     </APIProvider>
   );
 };
