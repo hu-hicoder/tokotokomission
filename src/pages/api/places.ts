@@ -1,4 +1,5 @@
 // src/pages/api/places.ts
+// src/pages/api/places.ts
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -7,28 +8,29 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return;
   }
 
+  const { lat, lng } = req.body;
+
+  if (!lat || !lng) {
+    res.status(400).json({ error: '緯度・経度の情報がありません。' });
+    return;
+  }
+
+  const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+  const type = 'cafe'; // カフェを検索
+  const radius = 300; // 半径300以内
+  const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lng}&radius=${radius}&type=${type}&key=${apiKey}`;
+
   try {
-    const { lat, lng, type } = req.body;
-
-    if (!lat || !lng || !type) {
-      res.status(400).json({ error: 'Missing parameters' });
-      return;
-    }
-
-    const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
-    const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lng}&radius=1500&type=${type}&key=${apiKey}`;
-
     const response = await fetch(url);
-
     if (!response.ok) {
-      res.status(response.status).json({ error: 'Failed to fetch places' });
+      res.status(response.status).json({ error: 'Google Places APIリクエスト失敗' });
       return;
     }
 
     const data = await response.json();
     res.status(200).json(data);
-
   } catch (error) {
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ error: 'サーバーエラーが発生しました。' });
   }
 }
+
