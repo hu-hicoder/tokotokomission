@@ -1,5 +1,9 @@
-export default function Home() {
+import { MapContent } from '@/app/map/components/map-content';
+
+export default function Page() {
   return (
-    <div>トコトコミッション</div> // 仮テキスト
+    <div className="h-svh">
+      <MapContent />
+    </div>
   );
 }
