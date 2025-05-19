@@ -58,7 +58,7 @@ export default function Page() {
     <div style={{ padding: 20 }}>
       <h1>目的地提案デモ</h1>
       <button onClick={handleGetCurrentPosition} disabled={loading}>
-        {loading ? '読み込み中...' : '現在地を取得して近くのカフェ検索'}
+        {loading ? '読み込み中...' : '現在地を取得して近くのカフェを検索'}
       </button>
 
       {error && <p style={{ color: 'red' }}>{error}</p>}
