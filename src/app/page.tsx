@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { MapContent } from './components/maps/map-content';
+import Start from "./components/home/Start";
 
 type Place = {
   place_id: string;
@@ -56,6 +57,7 @@ export default function Page() {
 
   return (
     <div style={{ padding: 20 }}>
+      <Start />
       <h1>目的地提案デモ</h1>
       <button onClick={handleGetCurrentPosition} disabled={loading}>
         {loading ? '読み込み中...' : '現在地を取得して近くのカフェを検索'}
