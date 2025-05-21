@@ -1,4 +1,3 @@
-//// filepath: src/app/(pages)/moving/page.tsx
 'use client';
 
 import Link from 'next/link';

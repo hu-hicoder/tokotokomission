@@ -4,9 +4,18 @@ import { PlacesProvider } from '@/context/PlacesContext';
 import { PlaceSearch } from '@/components/places/PlaceSearch';
 import { PlaceList } from '@/components/places/PlaceList';
 import { MapContent } from '@/components/maps/MapContent';
+import { useFormContext } from '@/context/FormContext';
 import Link from 'next/link';
+import { useEffect } from 'react';
 
 export default function ProposalPage() {
+  // 入力フォームのデータの使い方
+  const { data } = useFormContext();
+  // マウント時に一度だけログを出す
+  useEffect(() => {
+    console.log('ProposalPage data:', data);
+  }, [data]);
+
   return (
     <div style={{ padding: 20 }}>
       <h1>目的地提案デモ</h1>

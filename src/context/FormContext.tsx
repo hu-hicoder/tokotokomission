@@ -18,9 +18,9 @@ type FormContextValue = {
 
 const defaultData: FormData = {
   destinationTypes: [],
-  tasks: '',
-  transport: '',
-  weight: 0,
+  task: '',
+  method: '',
+  weight: 60,
 };
 
 const FormContext = createContext<FormContextValue | undefined>(undefined);
