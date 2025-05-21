@@ -1,30 +1,9 @@
-'use client';
-
-import React from 'react';
-import { APIProvider, Map, Marker } from '@vis.gl/react-google-maps';
-
-type Place = {
-  place_id: string;
-  name: string;
-  geometry: { location: { lat: number; lng: number } };
-};
-
-type Props = {
-  places: Place[];
-  center: { lat: number; lng: number };
-};
-
 export const MapContent = ({ places, center }: Props) => {
-  console.log('MapContent places:', places);  // デバッグ用：表示されている場所のデータを確認
-
   return (
-    <APIProvider
-      apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || ''}
-      mapId={process.env.NEXT_PUBLIC_GOOGLE_MAPS_ID || ''}
-    >
+    <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || ''} mapId={process.env.NEXT_PUBLIC_GOOGLE_MAPS_ID || ''}>
       <Map
-        defaultZoom={15}
-        defaultCenter={center}
+        center={center}     // ここをdefaultCenterから変更
+        zoom={15}           // defaultZoomから変更
         gestureHandling={'greedy'}
         disableDefaultUI={true}
         style={{ width: '100%', height: '400px' }}
@@ -43,4 +22,3 @@ export const MapContent = ({ places, center }: Props) => {
     </APIProvider>
   );
 };
-
