@@ -1,43 +1,43 @@
 export async function POST(request: Request) {
   try {
-    const { placeName } = await request.json();
+    const { lat, lng } = await request.json();
 
-    if (!placeName) {
-      return new Response(JSON.stringify({ error: '検索名称が必要です' }), { status: 400 });
+    if (!lat || !lng) {
+      return new Response(JSON.stringify({ error: '緯度経度が不足しています' }), { status: 400 });
     }
 
     const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
     if (!apiKey) {
-      return new Response(JSON.stringify({ error: 'APIキーが未設定です' }), { status: 500 });
+      return new Response(JSON.stringify({ error: 'APIキーが設定されていません' }), { status: 500 });
     }
 
-    // Geocoding APIで住所→緯度経度
-    const geoUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(placeName)}&key=${apiKey}`;
-    const geoRes = await fetch(geoUrl);
-    const geoData = await geoRes.json();
+    const radius = 3000; // 3km
+    // チェーン店名をパイプ区切りで指定
+    const keywords =
+      'スターバックス|タリーズ|コメダ珈琲|ドトール|エクセルシオールカフェ|サンマルクカフェ|星乃珈琲店|マクドナルド|モスバーガー|ミスタードーナツ|ケンタッキー|バーガーキング';
 
-    if (!geoData.results || geoData.results.length === 0) {
-      return new Response(JSON.stringify({ error: '該当する場所が見つかりません' }), { status: 404 });
+    const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lng}&radius=${radius}&type=cafe&keyword=${encodeURIComponent(
+      keywords
+    )}&language=ja&key=${apiKey}`;
+
+    const response = await fetch(url);
+    if (!response.ok) {
+      return new Response(JSON.stringify({ error: 'Google Places APIリクエスト失敗' }), { status: response.status });
     }
 
-    const location = geoData.results[0].geometry.location;
-    const lat = location.lat;
-    const lng = location.lng;
+    const data = await response.json();
 
-    // Places APIで半径300mのチェーン店カフェ検索
-    const radius = 300;
-    const keywords = 'マクドナルド|スターバックス|タリーズ|ドトール';
-    const placesUrl = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lng}&radius=${radius}&type=cafe&keyword=${encodeURIComponent(keywords)}&language=ja&key=${apiKey}`;
+    // サーバー側でも名前でさらに絞り込み（確実性UP）
+    const chainNames = keywords.split('|');
+    const filteredResults = (data.results || []).filter((place) =>
+      chainNames.some((name) => place.name.includes(name))
+    );
 
-    const placesRes = await fetch(placesUrl);
-    const placesData = await placesRes.json();
-
-    return new Response(JSON.stringify({ location, places: placesData.results }), {
+    return new Response(JSON.stringify({ results: filteredResults }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
     });
-  } catch (e) {
-    return new Response(JSON.stringify({ error: 'サーバーエラー' }), { status: 500 });
+  } catch (error) {
+    return new Response(JSON.stringify({ error: 'サーバーエラーが発生しました' }), { status: 500 });
   }
 }
-
