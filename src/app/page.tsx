@@ -51,7 +51,7 @@ export default function Page() {
 
   return (
     <div style={{ padding: 20 }}>
-      <h1>チェーン店カフェ検索</h1>
+      <h1>近くのカフェを検索</h1>
       <input
         type="text"
         placeholder="地名や駅名を入力"
