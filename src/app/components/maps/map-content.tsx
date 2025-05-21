@@ -21,6 +21,7 @@ export const MapContent = ({ places, center }: Props) => {
       mapId={process.env.NEXT_PUBLIC_GOOGLE_MAPS_ID || ''}
     >
       <Map
+        key={`${center.lat}-${center.lng}`} // これでcenterが変わるたび再描画促進
         center={center}
         zoom={15}
         gestureHandling={'greedy'}
