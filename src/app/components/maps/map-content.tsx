@@ -15,8 +15,13 @@ type Props = {
 };
 
 export const MapContent = ({ places, center }: Props) => {
+  console.log('MapContent places:', places);  // デバッグ用：表示されている場所のデータを確認
+
   return (
-    <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || ''} mapId={process.env.NEXT_PUBLIC_GOOGLE_MAPS_ID || ''}>
+    <APIProvider
+      apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || ''}
+      mapId={process.env.NEXT_PUBLIC_GOOGLE_MAPS_ID || ''}
+    >
       <Map
         defaultZoom={15}
         defaultCenter={center}
