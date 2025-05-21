@@ -15,8 +15,9 @@ export async function POST(request: Request) {
       return new Response(JSON.stringify({ error: 'APIキーが設定されていません' }), { status: 500 });
     }
 
-    const radius = 300;
-    const keywords = 'マクドナルド|スターバックス|タリーズ|ドトール|カフェベローチェ|ロッテリア|モスバーガー|コメダ珈琲|ACCEA CAFE|PRONTO|エクセルシオールカフェ|サンマルクカフェ|ヴィ・ド・フランス|ルノアール|サンマルクカフェ|ミスタードーナツ|むさしの森珈琲|上島珈琲店|星乃珈琲店|倉式珈琲|尾道浪漫珈琲';
+    const radius = 1500;
+    const keywords = 'スターバックス';
+
 
     const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lng}&radius=${radius}&type=cafe&keyword=${encodeURIComponent(keywords)}&language=ja&key=${apiKey}`;
 
