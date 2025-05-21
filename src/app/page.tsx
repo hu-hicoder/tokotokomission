@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { MapContent } from './components/maps/map-content';
 import Start from "./components/home/Start";
 import CalcCalorie from "./components/layouts/Calccalorie";
@@ -18,6 +18,10 @@ export default function Page() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  useEffect(() => {
+    console.log('centerが更新されました:', center);
+  }, [center]);
+
   const handleGetCurrentPosition = () => {
     if (!navigator.geolocation) {
       setError('位置情報は利用できません');
@@ -31,9 +35,10 @@ export default function Page() {
       async (position) => {
         const lat = position.coords.latitude;
         const lng = position.coords.longitude;
-        setCenter({ lat, lng });
 
-        console.log('現在のcenter:', center);
+        console.log('現在のcenter（新座標）:', { lat, lng });
+
+        setCenter({ lat, lng });
 
         try {
           const res = await fetch('/api/places', {
@@ -64,7 +69,7 @@ export default function Page() {
 
   return (
     <div style={{ padding: 20 }}>
-      <CalcCalorie></CalcCalorie>
+      <CalcCalorie />
       <h1>目的地提案デモ</h1>
       <button onClick={handleGetCurrentPosition} disabled={loading}>
         {loading ? '読み込み中...' : '現在地を取得して近くのカフェを検索'}
@@ -84,3 +89,4 @@ export default function Page() {
     </div>
   );
 }
+
