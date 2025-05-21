@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { MapContent } from './components/maps/map-content';
 
 type Place = {
   place_id: string;
@@ -27,7 +28,7 @@ export default function Page() {
     setCenter(null);
 
     try {
-      const res = await fetch('/api/places', {
+      const res = await fetch('/api/search', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ placeName: keyword }),
@@ -50,7 +51,7 @@ export default function Page() {
 
   return (
     <div style={{ padding: 20 }}>
-      <h1>カフェを検索</h1>
+      <h1>チェーン店カフェ検索</h1>
       <input
         type="text"
         placeholder="地名や駅名を入力"
@@ -66,8 +67,12 @@ export default function Page() {
 
       {center && places.length > 0 && (
         <>
-          <p>検索地点: 緯度 {center.lat.toFixed(5)}, 経度 {center.lng.toFixed(5)}</p>
-          {/* ここにMapContentを組み込むなどして地図表示も可能 */}
+          <p>
+            検索地点: 緯度 {center.lat.toFixed(5)}, 経度 {center.lng.toFixed(5)}
+          </p>
+          <div style={{ width: '100%', height: '400px', marginBottom: '20px' }}>
+            <MapContent places={places} center={center} />
+          </div>
           <ul>
             {places.map((place) => (
               <li key={place.place_id}>
