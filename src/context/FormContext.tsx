@@ -8,6 +8,7 @@ export type FormData = {
   task: string;
   method: string;
   weight: number;
+  goal: number;
   // 他に必要なフィールドを追加
 };
 
@@ -21,6 +22,7 @@ const defaultData: FormData = {
   task: '',
   method: '',
   weight: 60,
+  goal: 50,
 };
 
 const FormContext = createContext<FormContextValue | undefined>(undefined);

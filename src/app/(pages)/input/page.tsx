@@ -19,6 +19,17 @@ export default function InputPage() {
         {/* 仮テキスト */}
         <h1 className="text-xl font-bold text-center">タスク・目的地・交通手段 設定</h1>
         
+        {/* 目標値 */}
+        <div>
+          <label className="block font-medium mb-1">目標カロリー（kcal）</label>
+          <input
+            className="border rounded w-full px-3 py-2"
+            type="number"
+            value={data.goal}
+            onChange={(e) => setData({ goal: Number(e.target.value) })}
+          />
+        </div>
+        
         {/* タスク */}
         <div>
           <label className="block font-medium mb-1">タスク</label>
