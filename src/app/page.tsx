@@ -9,10 +9,12 @@ type Place = {
   place_id: string;
   name: string;
   vicinity?: string;
+  geometry: { location: { lat: number; lng: number } };
 };
 
 export default function Page() {
   const [places, setPlaces] = useState<Place[]>([]);
+  const [center, setCenter] = useState<{ lat: number; lng: number }>({ lat: 35.656, lng: 139.737 });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -29,6 +31,7 @@ export default function Page() {
       async (position) => {
         const lat = position.coords.latitude;
         const lng = position.coords.longitude;
+        setCenter({ lat, lng });
 
         try {
           const res = await fetch('/api/places', {
@@ -49,16 +52,16 @@ export default function Page() {
           setLoading(false);
         }
       },
-      (error) => {
+      () => {
         setError('位置情報の取得に失敗しました');
         setLoading(false);
-      }
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
     );
   };
 
   return (
     <div style={{ padding: 20 }}>
-      <Start />
       <CalcCalorie></CalcCalorie>
       <h1>目的地提案デモ</h1>
       <button onClick={handleGetCurrentPosition} disabled={loading}>
@@ -67,6 +70,8 @@ export default function Page() {
 
       {error && <p style={{ color: 'red' }}>{error}</p>}
 
+      <MapContent places={places} center={center} />
+
       <ul>
         {places.map((place) => (
           <li key={place.place_id}>
@@ -74,10 +79,6 @@ export default function Page() {
           </li>
         ))}
       </ul>
-
-      <div style={{ marginTop: 20, height: 400 }}>
-        <MapContent />
-      </div>
     </div>
   );
 }
