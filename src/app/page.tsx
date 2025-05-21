@@ -1,9 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { MapContent } from './components/maps/map-content';
-import Start from "./components/home/Start";
-import CalcCalorie from "./components/layouts/Calccalorie";
+import React, { useState } from 'react';
 
 type Place = {
   place_id: string;
@@ -13,80 +10,73 @@ type Place = {
 };
 
 export default function Page() {
+  const [keyword, setKeyword] = useState('');
   const [places, setPlaces] = useState<Place[]>([]);
-  const [center, setCenter] = useState<{ lat: number; lng: number }>({ lat: 35.656, lng: 139.737 });
-  const [loading, setLoading] = useState(false);
+  const [center, setCenter] = useState<{ lat: number; lng: number } | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    console.log('centerが更新されました:', center);
-  }, [center]);
-
-  const handleGetCurrentPosition = () => {
-    if (!navigator.geolocation) {
-      setError('位置情報は利用できません');
+  const handleSearch = async () => {
+    if (!keyword) {
+      setError('検索ワードを入力してください');
       return;
     }
-
-    setLoading(true);
     setError(null);
+    setLoading(true);
+    setPlaces([]);
+    setCenter(null);
 
-    navigator.geolocation.getCurrentPosition(
-      async (position) => {
-        const lat = position.coords.latitude;
-        const lng = position.coords.longitude;
+    try {
+      const res = await fetch('/api/search', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ placeName: keyword }),
+      });
 
-        console.log('現在のcenter（新座標）:', { lat, lng });
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error || 'APIエラー');
+      }
 
-        setCenter({ lat, lng });
-
-        try {
-          const res = await fetch('/api/places', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ lat, lng }),
-          });
-
-          if (!res.ok) {
-            throw new Error(`APIエラー: ${res.status}`);
-          }
-
-          const data = await res.json();
-          setPlaces(data.results || []);
-        } catch (e) {
-          setError('周辺施設の取得に失敗しました');
-        } finally {
-          setLoading(false);
-        }
-      },
-      () => {
-        setError('位置情報の取得に失敗しました');
-        setLoading(false);
-      },
-      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
-    );
+      const data = await res.json();
+      setCenter(data.location);
+      setPlaces(data.places || []);
+    } catch (e) {
+      setError(String(e));
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div style={{ padding: 20 }}>
-      <CalcCalorie />
-      <h1>目的地提案デモ</h1>
-      <button onClick={handleGetCurrentPosition} disabled={loading}>
-        {loading ? '読み込み中...' : '現在地を取得して近くのカフェを検索'}
+      <h1>カフェを検索</h1>
+      <input
+        type="text"
+        placeholder="地名や駅名を入力"
+        value={keyword}
+        onChange={(e) => setKeyword(e.target.value)}
+        style={{ width: 300, padding: 8 }}
+      />
+      <button onClick={handleSearch} disabled={loading} style={{ marginLeft: 10 }}>
+        {loading ? '検索中...' : '検索'}
       </button>
 
       {error && <p style={{ color: 'red' }}>{error}</p>}
 
-      <MapContent places={places} center={center} />
-
-      <ul>
-        {places.map((place) => (
-          <li key={place.place_id}>
-            <strong>{place.name}</strong> {place.vicinity && ` - ${place.vicinity}`}
-          </li>
-        ))}
-      </ul>
+      {center && places.length > 0 && (
+        <>
+          <p>検索地点: 緯度 {center.lat.toFixed(5)}, 経度 {center.lng.toFixed(5)}</p>
+          {/* ここにMapContentを組み込むなどして地図表示も可能 */}
+          <ul>
+            {places.map((place) => (
+              <li key={place.place_id}>
+                <strong>{place.name}</strong> {place.vicinity && ` - ${place.vicinity}`}
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
     </div>
   );
 }
-
