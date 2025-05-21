@@ -23,7 +23,13 @@ export async function POST(request: Request) {
 
     const data = await response.json();
 
-    return new Response(JSON.stringify(data), {
+    // ここで絞り込みをかける（名前にチェーン店名が含まれるか）
+    const chainNames = keywords.split('|');
+    const filteredResults = (data.results || []).filter(place => {
+      return chainNames.some(name => place.name.includes(name));
+    });
+
+    return new Response(JSON.stringify({ results: filteredResults }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
     });
@@ -32,4 +38,5 @@ export async function POST(request: Request) {
     return new Response(JSON.stringify({ error: 'サーバーエラーが発生しました' }), { status: 500 });
   }
 }
+
 
