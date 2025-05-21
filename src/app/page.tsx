@@ -11,68 +11,66 @@ type Place = {
 };
 
 export default function Page() {
-  const [keyword, setKeyword] = useState('');
   const [places, setPlaces] = useState<Place[]>([]);
   const [center, setCenter] = useState<{ lat: number; lng: number } | null>(null);
-  const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSearch = async () => {
-    if (!keyword) {
-      setError('検索ワードを入力してください');
+  const handleGetCurrentPosition = () => {
+    if (!navigator.geolocation) {
+      setError('位置情報は利用できません');
       return;
     }
-    setError(null);
+
     setLoading(true);
-    setPlaces([]);
-    setCenter(null);
+    setError(null);
 
-    try {
-      const res = await fetch('/api/places', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ placeName: keyword }),
-      });
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
 
-      if (!res.ok) {
-        const err = await res.json();
-        throw new Error(err.error || 'APIエラー');
-      }
+        setCenter({ lat, lng });
 
-      const data = await res.json();
-      setCenter(data.location);
-      setPlaces(data.places || []);
-    } catch (e) {
-      setError(String(e));
-    } finally {
-      setLoading(false);
-    }
+        try {
+          const res = await fetch('/api/places', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ lat, lng }),
+          });
+
+          if (!res.ok) {
+            throw new Error(`APIエラー: ${res.status}`);
+          }
+
+          const data = await res.json();
+          setPlaces(data.results || []);
+        } catch (e) {
+          setError('周辺施設の取得に失敗しました');
+        } finally {
+          setLoading(false);
+        }
+      },
+      () => {
+        setError('位置情報の取得に失敗しました');
+        setLoading(false);
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+    );
   };
 
   return (
     <div style={{ padding: 20 }}>
-      <h1>近くのカフェを検索</h1>
-      <input
-        type="text"
-        placeholder="地名や駅名を入力"
-        value={keyword}
-        onChange={(e) => setKeyword(e.target.value)}
-        style={{ width: 300, padding: 8 }}
-      />
-      <button onClick={handleSearch} disabled={loading} style={{ marginLeft: 10 }}>
-        {loading ? '検索中...' : '検索'}
+      <h1>現在地から3km以内のカフェを検索</h1>
+      <button onClick={handleGetCurrentPosition} disabled={loading}>
+        {loading ? '検索中...' : '現在地を取得して周辺カフェを検索'}
       </button>
 
       {error && <p style={{ color: 'red' }}>{error}</p>}
 
-      {center && places.length > 0 && (
+      {center && (
         <>
-          <p>
-            検索地点: 緯度 {center.lat.toFixed(5)}, 経度 {center.lng.toFixed(5)}
-          </p>
-          <div style={{ width: '100%', height: '400px', marginBottom: '20px' }}>
-            <MapContent places={places} center={center} />
-          </div>
+          <MapContent places={places} center={center} />
           <ul>
             {places.map((place) => (
               <li key={place.place_id}>
