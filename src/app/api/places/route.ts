@@ -28,6 +28,7 @@ export async function POST(request: Request) {
     });
 
   } catch (error) {
+    console.error('Error fetching places:', error);
     return new Response(JSON.stringify({ error: 'サーバーエラーが発生しました' }), { status: 500 });
   }
 }

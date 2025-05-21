@@ -10,7 +10,7 @@ const Start = () => {
                       {/* 入力画面に遷移するためのスタートボタン
                       ログインを促すように変更する可能性あり) */}
                       <Link 
-                        href="/"
+                        href="/input"
                         className="inline-block bg-blue-600 text-white font-semibold py-3 px-8 rounded-lg shadow-md hover:bg-blue-700 transition"
                       >
                         はじめる
