@@ -33,6 +33,8 @@ export default function Page() {
         const lng = position.coords.longitude;
         setCenter({ lat, lng });
 
+        console.log('現在のcenter:', center);
+
         try {
           const res = await fetch('/api/places', {
             method: 'POST',
