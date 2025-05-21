@@ -1,18 +1,13 @@
-'use client';
-
-import React, { useState } from 'react';
-import { MapContent } from './components/maps/map-content';
+import { useState } from 'react';
 
 type Place = {
   place_id: string;
   name: string;
   vicinity?: string;
-  geometry: { location: { lat: number; lng: number } };
 };
 
-export default function Page() {
+export function usePlaces() {
   const [places, setPlaces] = useState<Place[]>([]);
-  const [center, setCenter] = useState<{ lat: number; lng: number } | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -30,8 +25,6 @@ export default function Page() {
         const lat = position.coords.latitude;
         const lng = position.coords.longitude;
 
-        setCenter({ lat, lng });
-
         try {
           const res = await fetch('/api/places', {
             method: 'POST',
@@ -47,45 +40,18 @@ export default function Page() {
           setPlaces(data.results || []);
         } catch (e) {
           setError('周辺施設の取得に失敗しました');
+          console.error(e);
         } finally {
           setLoading(false);
         }
       },
-      () => {
+      (error) => {
         setError('位置情報の取得に失敗しました');
         setLoading(false);
-      },
-      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+        console.error(error);
+      }
     );
   };
 
-  return (
-    <div style={{ padding: 20 }}>
-      <h1>現在地から3km以内のカフェを検索</h1>
-      <button onClick={handleGetCurrentPosition} disabled={loading}>
-        {loading ? '検索中...' : '現在地を取得して周辺カフェを検索'}
-      </button>
-
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-
-      {center && (
-        <>
-          <MapContent places={places} center={center} />
-          <ul>
-            {places.map((place) => (
-              <li key={place.place_id}>
-                <strong>{place.name}</strong> {place.vicinity && ` - ${place.vicinity}`}
-              </li>
-            ))}
-          </ul>
-        </>
-      )}
-import Start from "@/components/home/Start";
-
-export default function Page() {
-  return (
-    <div style={{ padding: 20 }}>
-      <Start />
-    </div>
-  );
+  return { places, loading, error, handleGetCurrentPosition };
 }
