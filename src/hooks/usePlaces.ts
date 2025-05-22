@@ -8,6 +8,7 @@ type Place = {
 
 export function usePlaces() {
   const [places, setPlaces] = useState<Place[]>([]);
+  const [center, setCenter] = useState<{ lat: number; lng: number } | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -55,5 +56,5 @@ export function usePlaces() {
     );
   };
 
-  return { places, loading, error, handleGetCurrentPosition };
+  return { places, center, loading, error, handleGetCurrentPosition };
 }
