@@ -14,7 +14,7 @@ export default function AchievementPage() {
 
   return (
     <div style={{ padding: 20 }}>
-      <CalcCalorie />
+      <CalcCalorie />     
     </div>
   );
 }
