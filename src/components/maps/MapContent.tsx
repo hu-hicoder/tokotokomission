@@ -10,20 +10,18 @@ type Place = {
 };
 
 type Props = {
-  places?: Place[]; // 取得場所がある場合も、無い場合も対応できるようにoptionalに
-  center?: { lat: number; lng: number }; // centerもoptionalに
+  places: Place[];
+  center: { lat: number; lng: number };
 };
 
-export const MapContent = ({ places = [], center = { lat: 35.656, lng: 139.737 } }: Props) => {
+export const MapContent = ({ places, center }: Props) => {
   return (
-    <APIProvider
-      apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || ''}
-      mapId={process.env.NEXT_PUBLIC_GOOGLE_MAPS_ID || ''}
-    >
+    <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || ''}>
       <Map
-        key={`${center.lat}-${center.lng}`}
+        key={`${center.lat}-${center.lng}`} // centerが変わるたび再描画促進
         center={center}
         zoom={15}
+        mapId={process.env.NEXT_PUBLIC_GOOGLE_MAPS_ID || ''}
         gestureHandling="greedy"
         disableDefaultUI={true}
         style={{ width: '100%', height: '400px' }}

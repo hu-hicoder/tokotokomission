@@ -8,6 +8,7 @@ type Place = {
 
 export function usePlaces() {
   const [places, setPlaces] = useState<Place[]>([]);
+  const [center, setCenter] = useState<{ lat: number; lng: number } | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -24,6 +25,8 @@ export function usePlaces() {
       async (position) => {
         const lat = position.coords.latitude;
         const lng = position.coords.longitude;
+
+        setCenter({ lat, lng }); // ← ここでcenterを更新
 
         try {
           const res = await fetch('/api/places', {
@@ -53,5 +56,5 @@ export function usePlaces() {
     );
   };
 
-  return { places, loading, error, handleGetCurrentPosition };
+  return { places, center, loading, error, handleGetCurrentPosition };
 }
