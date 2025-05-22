@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import { MapContent } from './components/maps/map-content';
+import { MapContent } from '../components/maps/MapContent';
+import Start from '@/components/home/Start'; 
 
 type Place = {
   place_id: string;
@@ -59,33 +60,32 @@ export default function Page() {
     );
   };
 
-  return (
-    <div style={{ padding: 20 }}>
-      <h1>現在地から3km以内のカフェを検索</h1>
-      <button onClick={handleGetCurrentPosition} disabled={loading}>
-        {loading ? '検索中...' : '現在地を取得して周辺カフェを検索'}
-      </button>
+ return (
+  <div style={{ padding: 20 }}>
+    {/* カフェ検索のUI */}
+    <h1>現在地から3km以内のカフェを検索</h1>
+    <button onClick={handleGetCurrentPosition} disabled={loading}>
+      {loading ? '検索中...' : '現在地を取得して周辺カフェを検索'}
+    </button>
 
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+    {error && <p style={{ color: 'red' }}>{error}</p>}
 
-      {center && (
-        <>
-          <MapContent places={places} center={center} />
-          <ul>
-            {places.map((place) => (
-              <li key={place.place_id}>
-                <strong>{place.name}</strong> {place.vicinity && ` - ${place.vicinity}`}
-              </li>
-            ))}
-          </ul>
-        </>
-      )}
-import Start from "@/components/home/Start";
+    {center && (
+      <>
+        <MapContent places={places} center={center} />
+        <ul>
+          {places.map((place) => (
+            <li key={place.place_id}>
+              <strong>{place.name}</strong> {place.vicinity && ` - ${place.vicinity}`}
+            </li>
+          ))}
+        </ul>
+      </>
+    )}
 
-export default function Page() {
-  return (
-    <div style={{ padding: 20 }}>
-      <Start />
-    </div>
-  );
+    {/* Startコンポーネントも表示 */}
+    <hr />
+    <Start />
+  </div>
+);
 }
