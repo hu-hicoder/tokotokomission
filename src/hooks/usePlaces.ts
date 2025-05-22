@@ -25,6 +25,8 @@ export function usePlaces() {
         const lat = position.coords.latitude;
         const lng = position.coords.longitude;
 
+        setCenter({ lat, lng }); // ← ここでcenterを更新
+
         try {
           const res = await fetch('/api/places', {
             method: 'POST',
