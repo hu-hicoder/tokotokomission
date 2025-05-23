@@ -7,6 +7,19 @@ import { MapContent } from '@/components/maps/MapContent';
 import { useFormContext } from '@/context/FormContext';
 import Link from 'next/link';
 import { useEffect } from 'react';
+import { usePlacesContext } from '@/context/PlacesContext';
+
+export const ProposalPageInner = () => {
+  const { places, center } = usePlacesContext();
+
+  return (
+    <>
+      {center && (
+       <ProposalPageInner />
+      )}
+    </>
+  )
+}
 
 export default function ProposalPage() {
   // 入力フォームのデータの使い方
