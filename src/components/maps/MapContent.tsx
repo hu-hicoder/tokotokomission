@@ -16,11 +16,13 @@ type Props = {
   center: { lat: number; lng: number };
 };
 
-export const MapContent = ({ places, center }: Props) => {
+export const MapContent = () => {
+  const { places = [], center = { lat: 35.656, lng: 139.737 } } = usePlacesContext();
+
   return (
     <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || ''}>
       <Map
-        key={`${center.lat}-${center.lng}`} // centerが変わるたび再描画促進
+        key={`${center?.lat}-${center?.lng}`}
         center={center}
         zoom={15}
         mapId={process.env.NEXT_PUBLIC_GOOGLE_MAPS_ID || ''}
@@ -42,3 +44,4 @@ export const MapContent = ({ places, center }: Props) => {
     </APIProvider>
   );
 };
+
