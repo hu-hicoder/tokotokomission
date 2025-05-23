@@ -3,17 +3,6 @@
 import React from 'react';
 import { APIProvider, Map, Marker } from '@vis.gl/react-google-maps';
 
-type Place = {
-  place_id: string;
-  name: string;
-  geometry: { location: { lat: number; lng: number } };
-};
-
-type Props = {
-  places: Place[];
-  center: { lat: number; lng: number };
-};
-
 export const MapContent = ({ places, center }: Props) => {
   return (
     <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || ''}>
