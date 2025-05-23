@@ -4,6 +4,14 @@
 // import { MapContent } from '../components/maps/MapContent';
 import Start from '@/components/home/Start'; 
 
+export default function Page() {
+  return (
+    <div style={{ padding: 20 }}>
+      <Start />
+    </div>
+  );
+}
+
 // type Place = {
 //   place_id: string;
 //   name: string;
@@ -60,12 +68,4 @@ import Start from '@/components/home/Start';
 //     );
 //   };
 
- return (
-  <div style={{ padding: 20 }}>
-    
 
-    {/* Startコンポーネントも表示 */}
-    {/* <hr /> */}
-    <Start />
-  </div>
-);
