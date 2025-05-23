@@ -88,4 +88,3 @@ import React, { useState } from 'react';
     <Start />
   </div>
 );
-}
