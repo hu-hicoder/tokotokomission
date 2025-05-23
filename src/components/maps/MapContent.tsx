@@ -12,10 +12,11 @@ type Place = {
 };
 
 type Props = {
-  places: Place[];
-  center: { lat: number; lng: number };
+  places?: Place[];
+  center?: { lat: number; lng: number };
 };
 
+<<<<<<< HEAD
 export const MapContent = () => {
   const { places = [], center = { lat: 35.656, lng: 139.737 } } = usePlacesContext();
 
@@ -23,6 +24,13 @@ export const MapContent = () => {
     <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || ''}>
       <Map
         key={`${center?.lat}-${center?.lng}`}
+=======
+export const MapContent = ({ places = [], center = { lat: 35.656, lng: 139.737 } }: Props) => {
+  return (
+    <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || ''}>
+      <Map
+        key={`${center.lat}-${center.lng}`}
+>>>>>>> c922943357fe1f9959fb96136ccf0d73529ded9e
         center={center}
         zoom={15}
         mapId={process.env.NEXT_PUBLIC_GOOGLE_MAPS_ID || ''}

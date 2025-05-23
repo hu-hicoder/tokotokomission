@@ -8,6 +8,8 @@ export type FormData = {
   task: string;
   method: string;
   weight: number;
+  goal: number;
+  time: number; // 時間を追加
   // 他に必要なフィールドを追加
 };
 
@@ -21,6 +23,8 @@ const defaultData: FormData = {
   task: '',
   method: '',
   weight: 60,
+  goal: 50,
+  time: 1, // デフォルトの時間を1時間に設定
 };
 
 const FormContext = createContext<FormContextValue | undefined>(undefined);
