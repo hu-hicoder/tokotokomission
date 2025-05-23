@@ -2,6 +2,8 @@
 
 import React from 'react';
 import { APIProvider, Map, Marker } from '@vis.gl/react-google-maps';
+import { usePlacesContext } from '@/context/PlacesContext';
+
 
 type Place = {
   place_id: string;
