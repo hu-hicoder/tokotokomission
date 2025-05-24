@@ -1,15 +1,16 @@
 import { useState } from 'react';
+import { Place, LatLag } from '@/types/places';
 
-type Place = {
-  place_id: string;
-  name: string;
-  vicinity?: string;
-  geometry: { location: { lat: number; lng: number } }; // 追加
-};
+// type Place = {
+//   place_id: string;
+//   name: string;
+//   vicinity?: string;
+//   geometry: { location: { lat: number; lng: number } }; 
+// };
 
 export function usePlaces() {
   const [places, setPlaces] = useState<Place[]>([]);
-  const [center, setCenter] = useState<{ lat: number; lng: number } | null>(null);
+  const [center, setCenter] = useState<LatLag | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
