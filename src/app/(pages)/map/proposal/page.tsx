@@ -10,16 +10,18 @@ import { useEffect } from 'react';
 import { usePlacesContext } from '@/context/PlacesContext';
 
 export const ProposalPageInner = () => {
-  const { places, center } = usePlacesContext();
-
-  return (
-    <>
-      {center && (
-       <ProposalPageInner />
-      )}
-    </>
-  )
-}
+       const { places, center } = usePlacesContext();
+     
+       return (
+         <>
+           {center && (
+             <div style={{ marginTop: 20, height: 400 }}>
+               <MapContent places={places} center={center} />
+             </div>
+           )}
+         </>
+       )
+     }
 
 export default function ProposalPage() {
   // 入力フォームのデータの使い方
@@ -35,9 +37,7 @@ export default function ProposalPage() {
       <PlacesProvider>
         <PlaceSearch />
         <PlaceList />
-        <div style={{ marginTop: 20, height: 400 }}>
-          <MapContent />
-        </div>
+        <ProposalPageInner />
       </PlacesProvider>
       {/* 次へボタン → 移動中画面へ */}
       <div className="pt-8 pb-8">
